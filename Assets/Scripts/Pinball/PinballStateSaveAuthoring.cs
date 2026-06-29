@@ -42,10 +42,6 @@ namespace BallSystem
         /// </summary>
         private sealed class Baker : Baker<PinballStateSaveAuthoring>
         {
-            // ======================================================
-            // ECS コンポーネント変換
-            // ======================================================
-
             /// <summary>
             /// Authoring の設定を ECS コンポーネントとして登録する
             /// </summary>
@@ -55,10 +51,7 @@ namespace BallSystem
                 // 状態保存設定コンポーネントを生成する
                 PinballStateSaveData pinballStateSaveData = new PinballStateSaveData()
                 {
-                    // 状態保存入力を設定する
                     SaveAction = authoring._saveAction,
-
-                    // 状態復元入力を設定する
                     LoadAction = authoring._loadAction
                 };
 

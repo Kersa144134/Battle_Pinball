@@ -12,7 +12,7 @@ using UnityEngine;
 namespace BallSystem
 {
     /// <summary>
-    /// ピンボール生成設定を Inspector 上で編集するための Authoring クラス
+    /// ピンボール生成設定をインスペクタ上で編集するための Authoring クラス
     /// </summary>
     public sealed class PinballSpawnSettingsAuthoring : MonoBehaviour
     {
@@ -53,10 +53,6 @@ namespace BallSystem
         /// </summary>
         private sealed class Baker : Baker<PinballSpawnSettingsAuthoring>
         {
-            // ======================================================
-            // Baker 実装
-            // ======================================================
-
             /// <summary>
             /// Authoring の設定を ECS コンポーネントとして登録する
             /// </summary>

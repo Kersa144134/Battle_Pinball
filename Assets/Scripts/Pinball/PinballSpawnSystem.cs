@@ -62,9 +62,15 @@ namespace BallSystem
             // ランダム生成用の乱数を初期化する
             Random random = new Random(pinballSpawnSettings.RandomSeed);
 
+            // 生成したピンボール数を取得する
+            int spawnedEntityCount = spawnedEntities.Length;
+
             // 生成したすべてのピンボールに対して初期位置を設定する
-            foreach (Entity entity in spawnedEntities)
+            for (int index = 0; index < spawnedEntityCount; index++)
             {
+                // 現在処理するピンボールの Entity を取得する
+                Entity entity = spawnedEntities[index];
+
                 // スポーン半径内のランダムな位置を取得する
                 float3 position = random.NextFloat3InSphere() * pinballSpawnSettings.SpawnRadius;
 
