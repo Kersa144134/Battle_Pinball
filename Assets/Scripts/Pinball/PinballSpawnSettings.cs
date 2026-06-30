@@ -26,11 +26,6 @@ namespace BallSystem
         public int SpawnCount;
 
         /// <summary>
-        /// スポーン半径
-        /// </summary>
-        public float SpawnRadius;
-
-        /// <summary>
         /// ランダム生成に使用するシード値
         /// </summary>
         public uint RandomSeed;

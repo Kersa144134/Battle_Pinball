@@ -6,12 +6,13 @@
 // 概要     : ピンボールを生成する ECS システム
 // ======================================================
 
+using Klak.Math;
 using Unity.Burst;
 using Unity.Collections;
 using Unity.Entities;
 using Unity.Mathematics;
+using Unity.Physics;
 using Unity.Transforms;
-using Klak.Math;
 
 namespace BallSystem
 {
@@ -22,6 +23,15 @@ namespace BallSystem
     [UpdateInGroup(typeof(InitializationSystemGroup))]
     public partial struct PinballSpawnSystem : ISystem
     {
+        // ======================================================
+        // 定数
+        // ======================================================
+
+        /// <summary>
+        /// プール配置高さ
+        /// </summary>
+        private const float POOL_HEIGHT = 10f;
+
         // ======================================================
         // ISystem 実装
         // ======================================================
@@ -43,49 +53,99 @@ namespace BallSystem
         [BurstCompile]
         public void OnUpdate(ref SystemState state)
         {
-            // ピンボール生成設定を取得する
-            var pinballSpawnSettings = SystemAPI.GetSingleton<PinballSpawnSettings>();
+            // 生成設定取得
+            var settings = SystemAPI.GetSingleton<PinballSpawnSettings>();
 
-            // プレハブ Entity が存在しない場合は生成しない
-            if (!state.EntityManager.Exists(pinballSpawnSettings.Prefab))
+            // プレハブ存在チェック
+            if (!state.EntityManager.Exists(settings.Prefab))
             {
                 state.Enabled = false;
                 return;
             }
 
-            // 指定数のピンボールを生成する
-            NativeArray<Entity> spawnedEntities = state.EntityManager.Instantiate(
-                pinballSpawnSettings.Prefab,
-                pinballSpawnSettings.SpawnCount,
-                Allocator.Temp);
+            // 一括生成
+            NativeArray<Entity> entities =
+                state.EntityManager.Instantiate(
+                    settings.Prefab,
+                    settings.SpawnCount,
+                    Allocator.Temp);
 
-            // ランダム生成用の乱数を初期化する
-            Random random = new Random(pinballSpawnSettings.RandomSeed);
-
-            // 生成したピンボール数を取得する
-            int spawnedEntityCount = spawnedEntities.Length;
-
-            // 生成したすべてのピンボールに対して初期位置を設定する
-            for (int index = 0; index < spawnedEntityCount; index++)
+            // --------------------------------------------------
+            // 初期化ループ
+            // --------------------------------------------------
+            for (int i = 0; i < entities.Length; i++)
             {
-                // 現在処理するピンボールの Entity を取得する
-                Entity entity = spawnedEntities[index];
+                Entity entity = entities[i];
 
-                // スポーン半径内のランダムな位置を取得する
-                float3 position = random.NextFloat3InSphere() * pinballSpawnSettings.SpawnRadius;
+                // 現在の物理状態を取得する
+                PhysicsMass currentMass =
+                    SystemAPI.GetComponent<PhysicsMass>(entity);
 
-                // LocalTransform コンポーネントを取得する
-                var localTransform = SystemAPI.GetComponentRW<LocalTransform>(entity);
+                // 減衰設定を取得する
+                PhysicsDamping currentDamping =
+                    SystemAPI.GetComponent<PhysicsDamping>(entity);
 
-                // ピンボールの初期位置を設定する
-                localTransform.ValueRW.Position = position;
+                // 速度を取得する
+                PhysicsVelocity currentVelocity =
+                    SystemAPI.GetComponent<PhysicsVelocity>(entity);
+
+                // 現在の Transform を取得する
+                LocalTransform currentTransform =
+                    SystemAPI.GetComponent<LocalTransform>(entity);
+
+                // キャッシュコンポーネントを書き込み
+                SystemAPI.SetComponent(entity, new PinballPhysicsCache
+                {
+                    CachedLinearVelocity = currentVelocity.Linear,
+                    CachedAngularVelocity = currentVelocity.Angular,
+
+                    CachedMass = currentMass,
+                    CachedDamping = currentDamping,
+
+                    CachedPosition = currentTransform.Position,
+                    CachedRotation = currentTransform.Rotation
+                });
+
+                // --------------------------------------------------
+                // 位置をプール固定
+                // --------------------------------------------------
+                SystemAPI.SetComponent(entity, new LocalTransform
+                {
+                    Position = new float3(0f, POOL_HEIGHT, 0f),
+                    Rotation = quaternion.identity,
+                    Scale = 0.1f
+                });
+
+                // --------------------------------------------------
+                // 物理停止
+                // --------------------------------------------------
+                // 速度をゼロ化
+                SystemAPI.SetComponent(entity, new PhysicsVelocity
+                {
+                    Linear = float3.zero,
+                    Angular = float3.zero
+                });
+
+                // 物理影響を完全無効化
+                SystemAPI.SetComponent(entity, new PhysicsMass
+                {
+                    InverseMass = 0f,
+                    InverseInertia = float3.zero,
+                    Transform = RigidTransform.identity
+                });
+
+                // ダンピング停止
+                SystemAPI.SetComponent(entity, new PhysicsDamping
+                {
+                    Linear = 0f,
+                    Angular = 0f
+                });
+
+                // --------------------------------------------------
+                // プール状態に設定
+                // --------------------------------------------------
+                SystemAPI.SetComponentEnabled<PinballPoolState>(entity, false);
             }
-
-            // NativeArray を破棄する
-            spawnedEntities.Dispose();
-
-            // 初回生成のみ実行するためシステムを停止する
-            state.Enabled = false;
         }
     }
 }

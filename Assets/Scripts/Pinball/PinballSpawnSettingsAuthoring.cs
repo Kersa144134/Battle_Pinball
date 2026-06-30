@@ -33,12 +33,6 @@ namespace BallSystem
         private int _spawnCount = 10;
 
         /// <summary>
-        /// ピンボールを生成する半径
-        /// </summary>
-        [SerializeField]
-        private float _spawnRadius = 1.0f;
-
-        /// <summary>
         /// ランダム生成に使用するシード値
         /// </summary>
         [SerializeField]
@@ -72,16 +66,8 @@ namespace BallSystem
                 // 生成設定を格納するコンポーネントを作成する
                 PinballSpawnSettings pinballSpawnSettings = new PinballSpawnSettings()
                 {
-                    // プレハブを Entity として取得する
                     Prefab = GetEntity(authoring._prefab, TransformUsageFlags.Dynamic),
-
-                    // 生成数を設定する
                     SpawnCount = authoring._spawnCount,
-
-                    // スポーン半径を設定する
-                    SpawnRadius = authoring._spawnRadius,
-
-                    // ランダムシードを設定する
                     RandomSeed = authoring._randomSeed
                 };
 

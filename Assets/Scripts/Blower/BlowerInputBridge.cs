@@ -78,9 +78,9 @@ namespace BlowerSystem
             // PlayerInput ‚ªŠ„‚è“–‚Ä‚½ Player Index ‚ğæ“¾‚·‚é
             _playerId = _playerInput.playerIndex;
 
-            // PlayerId ‚Æ BlowerMoveData ‚ğ‚Â Entity ‚ğŒŸõ‘ÎÛ‚É‚·‚é
+            // BlowerId ‚Æ BlowerMoveData ‚ğ‚Â Entity ‚ğŒŸõ‘ÎÛ‚É‚·‚é
             _query = _entityManager.CreateEntityQuery(
-                typeof(PlayerIdComponent),
+                typeof(BlowerIdComponent),
                 typeof(BlowerMoveData)
             );
 
@@ -113,10 +113,10 @@ namespace BlowerSystem
             {
                 Entity entity = entities[i];
 
-                // Player Id ‚ğæ“¾‚·‚é
-                PlayerIdComponent id = _entityManager.GetComponentData<PlayerIdComponent>(entity);
+                // BlowerId ‚ğæ“¾‚·‚é
+                BlowerIdComponent id = _entityManager.GetComponentData<BlowerIdComponent>(entity);
 
-                // ©•ª‚Ì Player Id ‚Æˆê’v‚·‚éê‡‚Ì‚İˆ—‚·‚é
+                // ©•ª‚Ì PlayerId ‚Æˆê’v‚·‚éê‡‚Ì‚İˆ—‚·‚é
                 if (id.Value != _playerId)
                 {
                     continue;

@@ -53,20 +53,20 @@ namespace BlowerSystem
                 // èâä˙ï˚å¸ê∂ê¨
                 float initialDirection = 0f;
 
-                // PlayerIdComponentïtó^
-                AddComponent(entity, new PlayerIdComponent
+                // BlowerIdComponentïtó^
+                AddComponent(entity, new BlowerIdComponent
                 {
                     Value = authoring._playerId
                 });
 
-                // MoveInputDataïtó^
+                // BlowerMoveInputDataïtó^
                 AddComponent(entity, new BlowerMoveData
                 {
                     Direction = initialDirection
                 });
 
                 // MoveSpeedComponentïtó^
-                AddComponent(entity, new MoveSpeedComponent
+                AddComponent(entity, new BlowerMoveSpeedComponent
                 {
                     Value = authoring._speed
                 });

@@ -1,31 +1,30 @@
 // ======================================================
-// BlowerForceSettingsAuthoring.cs
+// BumperCollisionSettingsAuthoring.cs
 // 作成者   : 高橋一翔
-// 作成日時 : 2026-06-27
-// 更新日時 : 2026-06-27
-// 概要     : ブロワー設定を ECS コンポーネントへ変換する Authoring
+// 作成日時 : 2026-06-30
+// 更新日時 : 2026-06-30
+// 概要     : バンパー設定を ECS コンポーネントへ変換する Authoring
 // ======================================================
 
 using Unity.Entities;
-using Unity.Mathematics;
 using UnityEngine;
 
-namespace BlowerSystem
+namespace BumperSystem
 {
     /// <summary>
-    /// ブロワー設定をインスペクタ上で編集するための Authoring クラス
+    /// バンパー設定をインスペクタ上で編集するための Authoring クラス
     /// </summary>
-    public sealed class BlowerForceSettingsAuthoring : MonoBehaviour
+    public sealed class BumperCollisionSettingsAuthoring : MonoBehaviour
     {
         // ======================================================
         // インスペクタ設定
         // ======================================================
 
         /// <summary>
-        /// ブロワーがオブジェクトへ加える力
+        /// 反射時に加える力
         /// </summary>
         [SerializeField]
-        private float3 _force = math.float3(0.0f, 100.0f, 0.0f);
+        private float _power = 30.0f;
 
         // ======================================================
         // Baker
@@ -34,25 +33,25 @@ namespace BlowerSystem
         /// <summary>
         /// Authoring の情報を ECS コンポーネントへ変換する Baker
         /// </summary>
-        private sealed class Baker : Baker<BlowerForceSettingsAuthoring>
+        private sealed class Baker : Baker<BumperCollisionSettingsAuthoring>
         {
             /// <summary>
             /// Authoring の設定を ECS コンポーネントとして登録する
             /// </summary>
             /// <param name="authoring">変換元の Authoring</param>
-            public override void Bake(BlowerForceSettingsAuthoring authoring)
+            public override void Bake(BumperCollisionSettingsAuthoring authoring)
             {
-                // ブロワー設定を格納するコンポーネントを作成する
-                BlowerForceSettings blowerSettings = new BlowerForceSettings()
+                // バンパー設定を格納するコンポーネントを作成する
+                BumperCollisionSettings bumperSettings = new BumperCollisionSettings()
                 {
-                    Force = authoring._force
+                    Power = authoring._power,
                 };
 
                 // Authoring を持つ Entity を取得する
                 Entity entity = GetEntity(TransformUsageFlags.None);
 
-                // Entity にブロワー設定コンポーネントを追加する
-                AddComponent(entity, blowerSettings);
+                // Entity にバンパー設定を追加する
+                AddComponent(entity, bumperSettings);
             }
         }
     }

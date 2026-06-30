@@ -1,9 +1,9 @@
 // ======================================================
-// MoveSpeedComponent.cs
+// BlowerIdComponent.cs
 // 作成者   : 高橋一翔
 // 作成日時 : 2026-06-27
 // 更新日時 : 2026-06-27
-// 概要     : ブロワーの移動速度を保持する ECS コンポーネント
+// 概要     : ブロワー識別用 ID コンポーネント
 // ======================================================
 
 using Unity.Entities;
@@ -11,13 +11,13 @@ using Unity.Entities;
 namespace BlowerSystem
 {
     /// <summary>
-    /// 移動速度データ
+    /// ブロワーを識別するための ID
     /// </summary>
-    public struct MoveSpeedComponent : IComponentData
+    public struct BlowerIdComponent : IComponentData
     {
         /// <summary>
-        /// 移動速度
+        /// ブロワー ID 番号
         /// </summary>
-        public float Value;
+        public int Value;
     }
 }

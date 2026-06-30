@@ -54,7 +54,7 @@ namespace BlowerSystem
                 SystemAPI.Query<
                     RefRW<LocalTransform>,
                     RefRO<BlowerMoveData>,
-                    RefRO<MoveSpeedComponent>>())
+                    RefRO<BlowerMoveSpeedComponent>>())
             {
                 // Z Ž²“ü—Í‚Ì‚ÝŽæ“¾‚·‚é
                 float moveInputZ = input.ValueRO.Direction;
