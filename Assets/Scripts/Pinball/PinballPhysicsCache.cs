@@ -19,7 +19,29 @@ namespace BallSystem
     public struct PinballPhysicsCache : IComponentData
     {
         // ======================================================
-        // 速度情報キャッシュ
+        // Transform 情報
+        // ======================================================
+
+        /// <summary>
+        /// プール移動前の位置
+        /// 発射時の初期位置補正やデバッグ用途で使用する
+        /// </summary>
+        public float3 CachedPosition;
+
+        /// <summary>
+        /// プール移動前の回転
+        /// 発射方向基準の補助として使用する
+        /// </summary>
+        public quaternion CachedRotation;
+
+        /// <summary>
+        /// プール移動前のスケール
+        /// 発射時に元の見た目を復元するために使用する
+        /// </summary>
+        public float CachedScale;
+        
+        // ======================================================
+        // 速度情報
         // ======================================================
 
         /// <summary>
@@ -35,35 +57,19 @@ namespace BallSystem
         public float3 CachedAngularVelocity;
 
         // ======================================================
-        // 物理マス情報キャッシュ
+        // 物理情報
         // ======================================================
 
         /// <summary>
-        /// 質量情報（逆質量・慣性テンソルなど）
+        /// 質量情報
         /// プール時に無効化した物理を復元するために使用する
         /// </summary>
         public PhysicsMass CachedMass;
 
         /// <summary>
-        /// 減衰設定（空気抵抗・回転減衰）
+        /// 減衰設定
         /// プール解除時に元状態へ戻すために使用する
         /// </summary>
         public PhysicsDamping CachedDamping;
-
-        // ======================================================
-        // 位置補助情報（任意）
-        // ======================================================
-
-        /// <summary>
-        /// プール移動前の位置
-        /// 発射時の初期位置補正やデバッグ用途で使用する
-        /// </summary>
-        public float3 CachedPosition;
-
-        /// <summary>
-        /// プール移動前の回転
-        /// 発射方向基準の補助として使用する
-        /// </summary>
-        public quaternion CachedRotation;
     }
 }

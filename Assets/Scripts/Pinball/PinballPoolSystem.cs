@@ -28,10 +28,9 @@ namespace BallSystem
 
         /// <summary>
         /// プール待機位置
-        /// Y 軸上空に退避させることでゲーム空間から除外する
         /// </summary>
         private static readonly float3 POOL_POSITION =
-            new float3(0f, 100f, 0f);
+            new float3(0f, 10f, 0f);
 
         // ======================================================
         // ISystem 実装
@@ -44,20 +43,20 @@ namespace BallSystem
         [BurstCompile]
         public void OnUpdate(ref SystemState state)
         {
-            // プール対象のみを走査する
-            foreach (var (transform, velocity)
-                     in SystemAPI.Query<
-                         RefRW<LocalTransform>,
-                         RefRW<PhysicsVelocity>>()
-                         .WithAll<PinballPoolState>())
-            {
-                // 位置をプール位置へ固定
-                transform.ValueRW.Position = POOL_POSITION;
+            //// プール対象のみを走査する
+            //foreach (var (transform, velocity)
+            //         in SystemAPI.Query<
+            //             RefRW<LocalTransform>,
+            //             RefRW<PhysicsVelocity>>()
+            //             .WithAll<PinballPoolState>())
+            //{
+            //    // 位置をプール位置へ固定
+            //    transform.ValueRW.Position = POOL_POSITION;
 
-                // 回転は維持しつつ速度のみ初期化
-                velocity.ValueRW.Linear = float3.zero;
-                velocity.ValueRW.Angular = float3.zero;
-            }
+            //    // 回転は維持しつつ速度のみ初期化
+            //    velocity.ValueRW.Linear = float3.zero;
+            //    velocity.ValueRW.Angular = float3.zero;
+            //}
         }
     }
 }

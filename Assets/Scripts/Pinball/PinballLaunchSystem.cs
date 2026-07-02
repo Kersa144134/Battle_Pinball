@@ -19,7 +19,7 @@ namespace BallSystem
     /// プール状態のピンボールを発射するシステム
     /// Authoring の位置・角度を基準に発射する
     /// </summary>
-    //[BurstCompile]
+    [BurstCompile]
     [UpdateInGroup(typeof(SimulationSystemGroup))]
     public partial struct PinballLaunchSystem : ISystem
     {
@@ -39,16 +39,14 @@ namespace BallSystem
         public void OnUpdate(ref SystemState state)
         {
             // --------------------------------------------------
-            // 設定取得
+            // 発射設定取得
             // --------------------------------------------------
             PinballLaunchSettings settings =
                 SystemAPI.GetSingleton<PinballLaunchSettings>();
 
             _timer += SystemAPI.Time.DeltaTime;
 
-            // --------------------------------------------------
             // 発射間隔チェック
-            // --------------------------------------------------
             if (_timer < settings.Interval)
             {
                 return;
@@ -74,56 +72,43 @@ namespace BallSystem
             }
 
             // --------------------------------------------------
-            // 1体だけ発射
+            // 発射処理
             // --------------------------------------------------
+            // 1体だけ発射
             Entity entity = entities[0];
 
-            UnityEngine.Debug.Log($"Launch Target Entity : {entity}");
-
-            // --------------------------------------------------
-            // 発射元 Transform
-            // --------------------------------------------------
+            // 発射元 Transform 取得
             LocalTransform launcherTransform =
                 SystemAPI.GetComponent<LocalTransform>(settings.LauncherEntity);
 
-            // --------------------------------------------------
-            // ピンボール Transform更新
-            // --------------------------------------------------
+            // Physics キャッシュ取得
+            PinballPhysicsCache cache =
+                SystemAPI.GetComponent<PinballPhysicsCache>(entity);
+
+            // ピンボール Transform 更新
             SystemAPI.SetComponent(entity, new LocalTransform
             {
                 Position = launcherTransform.Position,
                 Rotation = launcherTransform.Rotation,
-                Scale = 1f
+                Scale = cache.CachedScale
             });
 
-            // --------------------------------------------------
             // 発射方向
-            // --------------------------------------------------
-            float3 direction =
-                math.mul(launcherTransform.Rotation, new float3(0f, 0f, 1f));
+            float3 direction = math.mul(launcherTransform.Rotation, new float3(0f, 0f, 1f));
 
-            // --------------------------------------------------
-            // Physics復元
-            // --------------------------------------------------
-            PinballPhysicsCache cache =
-                SystemAPI.GetComponent<PinballPhysicsCache>(entity);
-
+            // Physics 復元
             SystemAPI.SetComponent(entity, cache.CachedMass);
             SystemAPI.SetComponent(entity, cache.CachedDamping);
 
-            // --------------------------------------------------
             // 速度付与
-            // --------------------------------------------------
             SystemAPI.SetComponent(entity, new PhysicsVelocity
             {
                 Linear = direction * settings.Speed,
                 Angular = float3.zero
             });
 
-            // --------------------------------------------------
-            // プール解除（アクティブ化）
-            // --------------------------------------------------
-            SystemAPI.SetComponentEnabled<PinballPoolState>(entity, false);
+            // プール解除
+            SystemAPI.SetComponentEnabled<PinballPoolState>(entity, true);
 
             entities.Dispose();
         }

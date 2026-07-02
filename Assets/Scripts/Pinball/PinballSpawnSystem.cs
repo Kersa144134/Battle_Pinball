@@ -96,14 +96,15 @@ namespace BallSystem
                 // キャッシュコンポーネントを書き込み
                 SystemAPI.SetComponent(entity, new PinballPhysicsCache
                 {
+                    CachedPosition = currentTransform.Position,
+                    CachedRotation = currentTransform.Rotation,
+                    CachedScale = currentTransform.Scale,
+                    
                     CachedLinearVelocity = currentVelocity.Linear,
                     CachedAngularVelocity = currentVelocity.Angular,
 
                     CachedMass = currentMass,
-                    CachedDamping = currentDamping,
-
-                    CachedPosition = currentTransform.Position,
-                    CachedRotation = currentTransform.Rotation
+                    CachedDamping = currentDamping
                 });
 
                 // --------------------------------------------------
@@ -113,7 +114,7 @@ namespace BallSystem
                 {
                     Position = new float3(0f, POOL_HEIGHT, 0f),
                     Rotation = quaternion.identity,
-                    Scale = 0.1f
+                    Scale = currentTransform.Scale
                 });
 
                 // --------------------------------------------------
@@ -141,11 +142,15 @@ namespace BallSystem
                     Angular = 0f
                 });
 
-                // --------------------------------------------------
-                // プール状態に設定
-                // --------------------------------------------------
+                // プール状態設定
                 SystemAPI.SetComponentEnabled<PinballPoolState>(entity, false);
             }
+
+            // NativeArray を破棄する
+            entities.Dispose();
+
+            // 初回生成のみ実行するためシステムを停止する
+            state.Enabled = false;
         }
     }
 }
