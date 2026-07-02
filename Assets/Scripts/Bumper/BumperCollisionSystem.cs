@@ -47,9 +47,9 @@ namespace BumperSystem
                     BumperSettingsLookup =
                         SystemAPI.GetComponentLookup<BumperCollisionSettings>(true),
 
-                    // ピンボールタグを取得する
-                    PinballTagLookup =
-                        SystemAPI.GetComponentLookup<PinballTag>(true),
+                    // ピンボール状態を取得する
+                    PinballStateLookup =
+                        SystemAPI.GetComponentLookup<PinballState>(true),
 
                     // 座標情報を取得する
                     LocalTransformLookup =
@@ -85,10 +85,10 @@ namespace BumperSystem
         public ComponentLookup<BumperCollisionSettings> BumperSettingsLookup;
 
         /// <summary>
-        /// ピンボールタグ Lookup
+        /// ピンボール状態 Lookup
         /// </summary>
         [ReadOnly]
-        public ComponentLookup<PinballTag> PinballTagLookup;
+        public ComponentLookup<PinballState> PinballStateLookup;
 
         /// <summary>
         /// 座標 Lookup
@@ -136,7 +136,7 @@ namespace BumperSystem
             if (isEntityABumper)
             {
                 // Entity B がピンボールでない場合は終了する
-                if (!PinballTagLookup.HasComponent(triggerEvent.EntityB))
+                if (!PinballStateLookup.HasComponent(triggerEvent.EntityB))
                 {
                     return;
                 }
@@ -148,7 +148,7 @@ namespace BumperSystem
             else
             {
                 // Entity A がピンボールでない場合は終了する
-                if (!PinballTagLookup.HasComponent(triggerEvent.EntityA))
+                if (!PinballStateLookup.HasComponent(triggerEvent.EntityA))
                 {
                     return;
                 }

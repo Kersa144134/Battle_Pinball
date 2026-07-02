@@ -1,5 +1,5 @@
 // ======================================================
-// PinballLaunchSettingsAuthoring.cs
+// LauncherSettingsAuthoring.cs
 // 作成者   : 高橋一翔
 // 作成日時 : 2026-06-30
 // 更新日時 : 2026-06-30
@@ -9,12 +9,12 @@
 using Unity.Entities;
 using UnityEngine;
 
-namespace BallSystem
+namespace LauncherSystem
 {
     /// <summary>
     /// ピンボール発射設定をインスペクタで編集するための Authoring クラス
     /// </summary>
-    public sealed class PinballLaunchSettingsAuthoring : MonoBehaviour
+    public sealed class LauncherSettingsAuthoring : MonoBehaviour
     {
         // ======================================================
         // インスペクタ設定
@@ -39,7 +39,7 @@ namespace BallSystem
         /// <summary>
         /// Authoring 情報を ECS コンポーネントへ変換する Baker
         /// </summary>
-        private sealed class Baker : Baker<PinballLaunchSettingsAuthoring>
+        private sealed class Baker : Baker<LauncherSettingsAuthoring>
         {
             // ======================================================
             // Baker 実装
@@ -49,7 +49,7 @@ namespace BallSystem
             /// ECS コンポーネントへ変換する
             /// </summary>
             /// <param name="authoring">変換元 Authoring</param>
-            public override void Bake(PinballLaunchSettingsAuthoring authoring)
+            public override void Bake(LauncherSettingsAuthoring authoring)
             {
                 // --------------------------------------------------
                 // Entity 取得
@@ -59,7 +59,7 @@ namespace BallSystem
                 // --------------------------------------------------
                 // 生成設定コンポーネント作成
                 // --------------------------------------------------
-                PinballLaunchSettings settings = new PinballLaunchSettings
+                LauncherSettings settings = new LauncherSettings
                 {
                     LauncherEntity = entity,
                     Interval = authoring._interval,

@@ -1,5 +1,5 @@
 // ======================================================
-// PinballLaunchSettings.cs
+// LauncherSettings.cs
 // 作成者   : 高橋一翔
 // 作成日時 : 2026-06-30
 // 更新日時 : 2026-06-30
@@ -8,12 +8,12 @@
 
 using Unity.Entities;
 
-namespace BallSystem
+namespace LauncherSystem
 {
     /// <summary>
     /// ピンボール発射に関する設定
     /// </summary>
-    public struct PinballLaunchSettings : IComponentData
+    public struct LauncherSettings : IComponentData
     {
         /// <summary>
         /// 発射元エンティティ

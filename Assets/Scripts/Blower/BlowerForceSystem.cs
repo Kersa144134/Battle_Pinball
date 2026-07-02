@@ -31,7 +31,6 @@ namespace BlowerSystem
         /// ブロワーの力を適用する Job を実行する
         /// </summary>
         /// <param name="state">システムの状態</param>
-        [BurstCompile]
         public void OnUpdate(ref SystemState state)
         {
             // Physics シミュレーションを取得する
@@ -43,8 +42,8 @@ namespace BlowerSystem
                 // ブロワー設定を取得するための Lookup を設定する
                 BlowerSettingsLookup = SystemAPI.GetComponentLookup<BlowerForceSettings>(true),
 
-                // ピンボールタグを取得するための Lookup を設定する
-                PinballTagLookup = SystemAPI.GetComponentLookup<PinballTag>(true),
+                // ピンボール状態を取得するための Lookup を設定する
+                PinballStateLookup = SystemAPI.GetComponentLookup<PinballState>(true),
 
                 // PhysicsMass を取得するための Lookup を設定する
                 PhysicsMassLookup = SystemAPI.GetComponentLookup<PhysicsMass>(true),
@@ -80,10 +79,10 @@ namespace BlowerSystem
         public ComponentLookup<BlowerForceSettings> BlowerSettingsLookup;
 
         /// <summary>
-        /// ピンボールタグを取得する Lookup
+        /// ピンボール状態を取得する Lookup
         /// </summary>
         [ReadOnly]
-        public ComponentLookup<PinballTag> PinballTagLookup;
+        public ComponentLookup<PinballState> PinballStateLookup;
 
         /// <summary>
         /// PhysicsMass を取得する Lookup
@@ -109,7 +108,6 @@ namespace BlowerSystem
         /// Trigger 接触時の処理を実行する
         /// </summary>
         /// <param name="triggerEvent">Trigger イベント</param>
-        [BurstCompile]
         public void Execute(TriggerEvent triggerEvent)
         {
             // EntityA がブロワーか判定する
@@ -134,10 +132,11 @@ namespace BlowerSystem
             if (isEntityABlower)
             {
                 // EntityB がピンボールでない場合は処理しない
-                if (!PinballTagLookup.HasComponent(triggerEvent.EntityB))
+                if (!PinballStateLookup.HasComponent(triggerEvent.EntityB))
                 {
                     return;
                 }
+
 
                 // Entity を設定する
                 blowerEntity = triggerEvent.EntityA;
@@ -147,7 +146,7 @@ namespace BlowerSystem
             else
             {
                 // EntityA がピンボールでない場合は処理しない
-                if (!PinballTagLookup.HasComponent(triggerEvent.EntityA))
+                if (!PinballStateLookup.HasComponent(triggerEvent.EntityA))
                 {
                     return;
                 }

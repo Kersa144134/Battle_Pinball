@@ -6,7 +6,6 @@
 // 概要     : ピンボールを生成する ECS システム
 // ======================================================
 
-using Klak.Math;
 using Unity.Burst;
 using Unity.Collections;
 using Unity.Entities;
@@ -21,6 +20,7 @@ namespace BallSystem
     /// </summary>
     [BurstCompile]
     [UpdateInGroup(typeof(InitializationSystemGroup))]
+    [UpdateAfter(typeof(PinballPoolSystem))]
     public partial struct PinballSpawnSystem : ISystem
     {
         // ======================================================
@@ -42,7 +42,6 @@ namespace BallSystem
         /// <param name="state">システムの状態</param>
         public void OnCreate(ref SystemState state)
         {
-            // PinballSpawnSettings が存在する場合のみシステムを実行する
             state.RequireForUpdate<PinballSpawnSettings>();
         }
 
@@ -50,7 +49,6 @@ namespace BallSystem
         /// ピンボールを生成する
         /// </summary>
         /// <param name="state">システムの状態</param>
-        [BurstCompile]
         public void OnUpdate(ref SystemState state)
         {
             // 生成設定取得
@@ -76,6 +74,16 @@ namespace BallSystem
             for (int i = 0; i < entities.Length; i++)
             {
                 Entity entity = entities[i];
+
+                // ピンボール状態を取得する
+                PinballState pinballState =
+                    SystemAPI.GetComponent<PinballState>(entity);
+
+                //// ピンボールIDを設定する
+                //pinballState.Id = i;
+
+                //// 更新した情報を書き戻す
+                //SystemAPI.SetComponent(entity, pinballState);
 
                 // 現在の物理状態を取得する
                 PhysicsMass currentMass =
@@ -142,14 +150,25 @@ namespace BallSystem
                     Angular = 0f
                 });
 
+                // --------------------------------------------------
+                // プール登録
+                // --------------------------------------------------
+                DynamicBuffer<PinballPoolEntry> pool =
+                    SystemAPI.GetSingletonBuffer<PinballPoolEntry>();
+
+                pool.Add(new PinballPoolEntry
+                {
+                    Entity = entity
+                });
+
                 // プール状態設定
-                SystemAPI.SetComponentEnabled<PinballPoolState>(entity, false);
+                SystemAPI.SetComponentEnabled<PinballState>(entity, false);
             }
 
-            // NativeArray を破棄する
+            // NativeArray を破棄
             entities.Dispose();
 
-            // 初回生成のみ実行するためシステムを停止する
+            // システム停止
             state.Enabled = false;
         }
     }

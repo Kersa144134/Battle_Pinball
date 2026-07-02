@@ -15,7 +15,6 @@ GameObject:
   - component: {fileID: 7909154671859156055}
   - component: {fileID: 2873806532530008321}
   - component: {fileID: 989718884658615985}
-  - component: {fileID: -734247550321798761}
   m_Layer: 0
   m_Name: Ball
   m_TagString: Untagged
@@ -167,15 +166,3 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4502fdc89f542494aaf586020ad9824b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::BallSystem.PinballPhysicsCacheAuthoring
---- !u!114 &-734247550321798761
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7558753602110401382}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: df10d0d333528e5409a08ae9c61081a8, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::BallSystem.PinballPoolStateAuthoring
