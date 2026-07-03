@@ -9,7 +9,7 @@
 using Unity.Entities;
 using UnityEngine;
 
-namespace BallSystem
+namespace PinballSystem
 {
     /// <summary>
     /// ピンボール状態を付与するための Authoring クラス

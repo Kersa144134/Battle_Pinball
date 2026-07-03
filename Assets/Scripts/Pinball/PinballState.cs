@@ -8,18 +8,22 @@
 
 using Unity.Entities;
 
-namespace BallSystem
+namespace PinballSystem
 {
     /// <summary>
     /// ピンボールの状態を保持するコンポーネント
-    /// Enable / Disable により発射状態を制御する
+    /// プール状態・発射状態・停止状態などを数値で管理する
     /// </summary>
-    public struct PinballState : IComponentData, IEnableableComponent
+    public struct PinballState : IComponentData
     {
         /// <summary>
-        /// ピンボールを識別する ID
-        /// 将来的な検索やデバッグ用途で使用する
+        /// ピンボール識別 ID
         /// </summary>
         public int Id;
+
+        /// <summary>
+        /// ピンボールの状態値
+        /// </summary>
+        public byte State;
     }
 }

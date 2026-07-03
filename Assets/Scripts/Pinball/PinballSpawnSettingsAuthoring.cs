@@ -2,14 +2,14 @@
 // PinballSpawnSettingsAuthoring.cs
 // 作成者   : 高橋一翔
 // 作成日時 : 2026-06-27
-// 更新日時 : 2026-06-27
+// 更新日時 : 2026-07-03
 // 概要     : ピンボール生成設定を ECS コンポーネントへ変換する Authoring
 // ======================================================
 
 using Unity.Entities;
 using UnityEngine;
 
-namespace BallSystem
+namespace PinballSystem
 {
     /// <summary>
     /// ピンボール生成設定をインスペクタ上で編集するための Authoring クラス
@@ -27,9 +27,10 @@ namespace BallSystem
         private GameObject _prefab = null;
 
         /// <summary>
-        /// 生成するピンボール数
+        /// プールに生成するピンボールの総数
         /// </summary>
         [SerializeField]
+        [Min(1)]
         private int _spawnCount = 10;
 
         /// <summary>
@@ -62,20 +63,24 @@ namespace BallSystem
 
                     return;
                 }
-                
-                // 生成設定を格納するコンポーネントを作成する
-                PinballSpawnSettings pinballSpawnSettings = new PinballSpawnSettings()
+
+                // --------------------------------------------------
+                // 生成設定コンポーネント作成
+                // --------------------------------------------------
+                PinballSpawnSettings settings = new PinballSpawnSettings
                 {
                     Prefab = GetEntity(authoring._prefab, TransformUsageFlags.Dynamic),
                     SpawnCount = authoring._spawnCount,
                     RandomSeed = authoring._randomSeed
                 };
 
-                // Authoring を持つ Entity を取得する
-                Entity entity = GetEntity(TransformUsageFlags.None);
+                // --------------------------------------------------
+                // Entity取得
+                // --------------------------------------------------
+                Entity entity =
+                    GetEntity(TransformUsageFlags.None);
 
-                // Entity に生成設定コンポーネントを追加する
-                AddComponent(entity, pinballSpawnSettings);
+                AddComponent(entity, settings);
             }
         }
     }

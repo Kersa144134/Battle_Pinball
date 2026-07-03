@@ -6,13 +6,13 @@
 // 概要     : ブロワーによる力の付与を行う ECS システム
 // ======================================================
 
-using BallSystem;
 using Unity.Burst;
 using Unity.Collections;
 using Unity.Entities;
 using Unity.Physics;
 using Unity.Physics.Extensions;
 using Unity.Physics.Systems;
+using PinballSystem;
 
 namespace BlowerSystem
 {

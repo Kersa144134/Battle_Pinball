@@ -13,7 +13,7 @@ using Unity.Mathematics;
 using Unity.Physics;
 using Unity.Transforms;
 
-namespace BallSystem
+namespace PinballSystem
 {
     /// <summary>
     /// ピンボールの生成処理を行うシステム
@@ -75,16 +75,6 @@ namespace BallSystem
             {
                 Entity entity = entities[i];
 
-                // ピンボール状態を取得する
-                PinballState pinballState =
-                    SystemAPI.GetComponent<PinballState>(entity);
-
-                //// ピンボールIDを設定する
-                //pinballState.Id = i;
-
-                //// 更新した情報を書き戻す
-                //SystemAPI.SetComponent(entity, pinballState);
-
                 // 現在の物理状態を取得する
                 PhysicsMass currentMass =
                     SystemAPI.GetComponent<PhysicsMass>(entity);
@@ -107,7 +97,7 @@ namespace BallSystem
                     CachedPosition = currentTransform.Position,
                     CachedRotation = currentTransform.Rotation,
                     CachedScale = currentTransform.Scale,
-                    
+
                     CachedLinearVelocity = currentVelocity.Linear,
                     CachedAngularVelocity = currentVelocity.Angular,
 
@@ -161,8 +151,18 @@ namespace BallSystem
                     Entity = entity
                 });
 
-                // プール状態設定
-                SystemAPI.SetComponentEnabled<PinballState>(entity, false);
+                // --------------------------------------------------
+                // 状態設定
+                // --------------------------------------------------
+                // ピンボール状態を取得する
+                PinballState pinballState =
+                    SystemAPI.GetComponent<PinballState>(entity);
+
+                // 状態をアクティブ状態に設定する
+                pinballState.State = PinballStateType.Active;
+
+                // 更新した状態を書き戻す
+                SystemAPI.SetComponent(entity, pinballState);
             }
 
             // NativeArray を破棄

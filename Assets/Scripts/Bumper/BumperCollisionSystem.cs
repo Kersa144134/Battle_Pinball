@@ -6,7 +6,6 @@
 // 概要     : バンパーと衝突したピンボールへ反発速度を与える ECS システム
 // ======================================================
 
-using BallSystem;
 using Unity.Burst;
 using Unity.Collections;
 using Unity.Entities;
@@ -14,6 +13,7 @@ using Unity.Mathematics;
 using Unity.Physics;
 using Unity.Physics.Systems;
 using Unity.Transforms;
+using PinballSystem;
 
 namespace BumperSystem
 {

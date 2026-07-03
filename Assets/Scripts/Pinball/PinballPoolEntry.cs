@@ -8,7 +8,7 @@
 
 using Unity.Entities;
 
-namespace BallSystem
+namespace PinballSystem
 {
     /// <summary>
     /// ピンボールプールへ登録されている Entity を保持する

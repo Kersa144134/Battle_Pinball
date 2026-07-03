@@ -11,7 +11,7 @@ using Unity.Entities;
 using Unity.Mathematics;
 using Unity.Physics;
 using Unity.Transforms;
-using BallSystem;
+using PinballSystem;
 
 namespace LauncherSystem
 {
@@ -35,8 +35,14 @@ namespace LauncherSystem
             DynamicBuffer<PinballPoolEntry> pool =
                 SystemAPI.GetSingletonBuffer<PinballPoolEntry>();
 
+            // プールが空なら終了
+            if (pool.Length == 0)
+            {
+                return;
+            }
+
             // --------------------------------------------------
-            // 各ランチャーを更新
+            // ランチャー更新
             // --------------------------------------------------
             foreach (var (launcherSettings, launcherState)
                 in SystemAPI.Query<
@@ -46,7 +52,7 @@ namespace LauncherSystem
                 // 経過時間更新
                 launcherState.ValueRW.ElapsedTime += SystemAPI.Time.DeltaTime;
 
-                // 発射条件未達の場合はスキップ
+                // 発射条件未達
                 if (launcherState.ValueRO.ElapsedTime <
                     launcherSettings.ValueRO.Interval)
                 {
@@ -57,37 +63,32 @@ namespace LauncherSystem
                 launcherState.ValueRW.ElapsedTime = 0f;
 
                 // --------------------------------------------------
-                // プール空チェック
+                // プールから発射対象を取得
                 // --------------------------------------------------
-                if (pool.Length == 0)
-                {
-                    break;
-                }
+                Entity entity =
+                    pool[pool.Length - 1].Entity;
+
+                // 取得した要素をプールから削除
+                pool.RemoveAt(pool.Length - 1);
 
                 // --------------------------------------------------
-                // 発射対象取得
+                // 発射元ランチャーのTransform取得
                 // --------------------------------------------------
-                Entity entity = pool[0].Entity;
-
-                // キューから取り出し
-                pool.RemoveAt(0);
-
-                // --------------------------------------------------
-                // 発射元 Transform 取得
-                // --------------------------------------------------
+                // ランチャー位置と回転を発射基準として使用
                 LocalTransform launcherTransform =
                     SystemAPI.GetComponent<LocalTransform>(
                         launcherSettings.ValueRO.LauncherEntity);
 
                 // --------------------------------------------------
-                // 物理キャッシュ取得
+                // ピンボール物理キャッシュ取得
                 // --------------------------------------------------
                 PinballPhysicsCache cache =
                     SystemAPI.GetComponent<PinballPhysicsCache>(entity);
 
                 // --------------------------------------------------
-                // Transform 再配置
+                // ピンボールTransformを発射位置へ更新
                 // --------------------------------------------------
+                // 発射時にランチャー位置へ同期させる
                 SystemAPI.SetComponent(entity, new LocalTransform
                 {
                     Position = launcherTransform.Position,
@@ -96,22 +97,25 @@ namespace LauncherSystem
                 });
 
                 // --------------------------------------------------
-                // 発射方向計算
+                // 発射方向を計算
                 // --------------------------------------------------
+                // ランチャー前方ベクトルをワールド空間へ変換
                 float3 direction =
                     math.mul(
                         launcherTransform.Rotation,
                         new float3(0f, 0f, 1f));
 
                 // --------------------------------------------------
-                // 物理状態復元
+                // 物理状態の復元
                 // --------------------------------------------------
+                // プール中に無効化していた物理パラメータを復元
                 SystemAPI.SetComponent(entity, cache.CachedMass);
                 SystemAPI.SetComponent(entity, cache.CachedDamping);
 
                 // --------------------------------------------------
-                // 初速度付与
+                // 初速度を付与
                 // --------------------------------------------------
+                // 発射方向へ初速度を与えて飛翔挙動を生成
                 SystemAPI.SetComponent(entity, new PhysicsVelocity
                 {
                     Linear = direction * launcherSettings.ValueRO.Speed,
@@ -119,9 +123,17 @@ namespace LauncherSystem
                 });
 
                 // --------------------------------------------------
-                // プール状態解除
+                // 状態設定
                 // --------------------------------------------------
-                SystemAPI.SetComponentEnabled<PinballState>(entity, true);
+                // ピンボール状態を取得する
+                PinballState pinballState =
+                    SystemAPI.GetComponent<PinballState>(entity);
+
+                // 状態をアクティブ状態に設定する
+                pinballState.State = PinballStateType.Active;
+
+                // 更新した状態を書き戻す
+                SystemAPI.SetComponent(entity, pinballState);
             }
         }
     }

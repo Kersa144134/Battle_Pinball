@@ -8,7 +8,7 @@
 
 using Unity.Entities;
 
-namespace BallSystem
+namespace PinballSystem
 {
     /// <summary>
     /// ピンボールプールを管理する Entity を識別するタグコンポーネント

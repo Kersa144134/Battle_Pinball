@@ -10,7 +10,7 @@ using Unity.Entities;
 using Unity.Mathematics;
 using Unity.Physics;
 
-namespace BallSystem
+namespace PinballSystem
 {
     /// <summary>
     /// ピンボールの物理状態を一時保存するコンポーネント
