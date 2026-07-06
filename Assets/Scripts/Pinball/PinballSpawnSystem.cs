@@ -28,9 +28,14 @@ namespace PinballSystem
         // ======================================================
 
         /// <summary>
+        /// プールを1列に配置する最大個数
+        /// </summary>
+        private const int POOL_ROW_COUNT = 50;
+
+        /// <summary>
         /// プール配置高さ
         /// </summary>
-        private const float POOL_HEIGHT = 10f;
+        private const float POOL_HEIGHT = 50f;
 
         // ======================================================
         // ISystem 実装
@@ -52,7 +57,7 @@ namespace PinballSystem
         public void OnUpdate(ref SystemState state)
         {
             // 生成設定取得
-            var settings = SystemAPI.GetSingleton<PinballSpawnSettings>();
+            PinballSpawnSettings settings = SystemAPI.GetSingleton<PinballSpawnSettings>();
 
             // プレハブ存在チェック
             if (!state.EntityManager.Exists(settings.Prefab))
@@ -68,6 +73,10 @@ namespace PinballSystem
                     settings.SpawnCount,
                     Allocator.Temp);
 
+            // ピンボールプール取得
+            DynamicBuffer<PinballPoolEntry> pool =
+                    SystemAPI.GetSingletonBuffer<PinballPoolEntry>();
+
             // --------------------------------------------------
             // 初期化ループ
             // --------------------------------------------------
@@ -75,44 +84,26 @@ namespace PinballSystem
             {
                 Entity entity = entities[i];
 
-                // 現在の物理状態を取得する
-                PhysicsMass currentMass =
-                    SystemAPI.GetComponent<PhysicsMass>(entity);
-
-                // 減衰設定を取得する
-                PhysicsDamping currentDamping =
-                    SystemAPI.GetComponent<PhysicsDamping>(entity);
-
-                // 速度を取得する
-                PhysicsVelocity currentVelocity =
-                    SystemAPI.GetComponent<PhysicsVelocity>(entity);
-
-                // 現在の Transform を取得する
-                LocalTransform currentTransform =
-                    SystemAPI.GetComponent<LocalTransform>(entity);
-
-                // キャッシュコンポーネントを書き込み
-                SystemAPI.SetComponent(entity, new PinballPhysicsCache
-                {
-                    CachedPosition = currentTransform.Position,
-                    CachedRotation = currentTransform.Rotation,
-                    CachedScale = currentTransform.Scale,
-
-                    CachedLinearVelocity = currentVelocity.Linear,
-                    CachedAngularVelocity = currentVelocity.Angular,
-
-                    CachedMass = currentMass,
-                    CachedDamping = currentDamping
-                });
+                // --------------------------------------------------
+                // ピンボール物理データ取得
+                // --------------------------------------------------
+                PinballPhysicsData physics =
+                    SystemAPI.GetComponent<PinballPhysicsData>(entity);
 
                 // --------------------------------------------------
-                // 位置をプール固定
+                // 位置設定
                 // --------------------------------------------------
+                // X座標を算出する
+                float positionX = i % POOL_ROW_COUNT;
+
+                // Z座標を算出する
+                float positionZ = i / POOL_ROW_COUNT; 
+                
                 SystemAPI.SetComponent(entity, new LocalTransform
                 {
-                    Position = new float3(0f, POOL_HEIGHT, 0f),
+                    Position = new float3(positionX, POOL_HEIGHT, positionZ),
                     Rotation = quaternion.identity,
-                    Scale = currentTransform.Scale
+                    Scale = physics.Scale
                 });
 
                 // --------------------------------------------------
@@ -143,9 +134,6 @@ namespace PinballSystem
                 // --------------------------------------------------
                 // プール登録
                 // --------------------------------------------------
-                DynamicBuffer<PinballPoolEntry> pool =
-                    SystemAPI.GetSingletonBuffer<PinballPoolEntry>();
-
                 pool.Add(new PinballPoolEntry
                 {
                     Entity = entity
@@ -154,15 +142,11 @@ namespace PinballSystem
                 // --------------------------------------------------
                 // 状態設定
                 // --------------------------------------------------
-                // ピンボール状態を取得する
-                PinballState pinballState =
-                    SystemAPI.GetComponent<PinballState>(entity);
-
-                // 状態をアクティブ状態に設定する
-                pinballState.State = PinballStateType.Active;
-
-                // 更新した状態を書き戻す
-                SystemAPI.SetComponent(entity, pinballState);
+                SystemAPI.SetComponent(entity,
+                    new PinballState
+                    {
+                        State = PinballStateType.Pool
+                    });
             }
 
             // NativeArray を破棄

@@ -17,11 +17,6 @@ namespace PinballSystem
     public struct PinballState : IComponentData
     {
         /// <summary>
-        /// ピンボール識別 ID
-        /// </summary>
-        public int Id;
-
-        /// <summary>
         /// ピンボールの状態値
         /// </summary>
         public byte State;

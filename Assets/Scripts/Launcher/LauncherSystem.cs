@@ -72,7 +72,7 @@ namespace LauncherSystem
                 pool.RemoveAt(pool.Length - 1);
 
                 // --------------------------------------------------
-                // 発射元ランチャーのTransform取得
+                // 発射元ランチャーの Transform 取得
                 // --------------------------------------------------
                 // ランチャー位置と回転を発射基準として使用
                 LocalTransform launcherTransform =
@@ -80,10 +80,10 @@ namespace LauncherSystem
                         launcherSettings.ValueRO.LauncherEntity);
 
                 // --------------------------------------------------
-                // ピンボール物理キャッシュ取得
+                // ピンボール物理データ取得
                 // --------------------------------------------------
-                PinballPhysicsCache cache =
-                    SystemAPI.GetComponent<PinballPhysicsCache>(entity);
+                PinballPhysicsData physics =
+                    SystemAPI.GetComponent<PinballPhysicsData>(entity);
 
                 // --------------------------------------------------
                 // ピンボールTransformを発射位置へ更新
@@ -93,7 +93,7 @@ namespace LauncherSystem
                 {
                     Position = launcherTransform.Position,
                     Rotation = launcherTransform.Rotation,
-                    Scale = cache.CachedScale
+                    Scale = physics.Scale
                 });
 
                 // --------------------------------------------------
@@ -108,9 +108,23 @@ namespace LauncherSystem
                 // --------------------------------------------------
                 // 物理状態の復元
                 // --------------------------------------------------
-                // プール中に無効化していた物理パラメータを復元
-                SystemAPI.SetComponent(entity, cache.CachedMass);
-                SystemAPI.SetComponent(entity, cache.CachedDamping);
+                // PhysicsCollider を取得する
+                PhysicsCollider physicsCollider =
+                    SystemAPI.GetComponent<PhysicsCollider>(entity);
+
+                // PhysicsMass を復元する
+                SystemAPI.SetComponent(
+                    entity,
+                    PhysicsMass.CreateDynamic(
+                        physicsCollider.MassProperties,
+                        physics.Mass));
+
+                // PhysicsDamping を復元する
+                SystemAPI.SetComponent(entity, new PhysicsDamping
+                {
+                    Linear = physics.LinearDamping,
+                    Angular = physics.AngularDamping
+                });
 
                 // --------------------------------------------------
                 // 初速度を付与
@@ -125,15 +139,12 @@ namespace LauncherSystem
                 // --------------------------------------------------
                 // 状態設定
                 // --------------------------------------------------
-                // ピンボール状態を取得する
-                PinballState pinballState =
-                    SystemAPI.GetComponent<PinballState>(entity);
-
                 // 状態をアクティブ状態に設定する
-                pinballState.State = PinballStateType.Active;
-
-                // 更新した状態を書き戻す
-                SystemAPI.SetComponent(entity, pinballState);
+                SystemAPI.SetComponent(entity,
+                    new PinballState
+                    {
+                        State = PinballStateType.Active
+                    });
             }
         }
     }

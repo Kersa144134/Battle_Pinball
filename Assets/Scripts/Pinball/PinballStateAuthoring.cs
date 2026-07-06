@@ -39,11 +39,12 @@ namespace PinballSystem
                 Entity entity = GetEntity(TransformUsageFlags.Dynamic);
 
                 // ピンボール状態を追加する
-                AddComponent(entity, new PinballState
-                {
-                    // 初期値は未割り当て
-                    Id = -1
-                });
+                AddComponent(entity,
+                    new PinballState
+                    {
+                        State = PinballStateType.Initialize
+                    }
+                );
             }
         }
     }
