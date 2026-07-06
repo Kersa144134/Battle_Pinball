@@ -65,29 +65,29 @@ namespace LauncherSystem
                 // --------------------------------------------------
                 // プールから発射対象を取得
                 // --------------------------------------------------
-                Entity entity =
-                    pool[pool.Length - 1].Entity;
+                // プールが空の場合は処理なし
+                if (pool.Length == 0)
+                {
+                    continue;
+                }
+
+                Entity entity = pool[pool.Length - 1].Entity;
 
                 // 取得した要素をプールから削除
                 pool.RemoveAt(pool.Length - 1);
 
-                // --------------------------------------------------
-                // 発射元ランチャーの Transform 取得
-                // --------------------------------------------------
-                // ランチャー位置と回転を発射基準として使用
-                LocalTransform launcherTransform =
-                    SystemAPI.GetComponent<LocalTransform>(
-                        launcherSettings.ValueRO.LauncherEntity);
-
-                // --------------------------------------------------
                 // ピンボール物理データ取得
-                // --------------------------------------------------
                 PinballPhysicsData physics =
                     SystemAPI.GetComponent<PinballPhysicsData>(entity);
 
                 // --------------------------------------------------
                 // ピンボールTransformを発射位置へ更新
                 // --------------------------------------------------
+                // ランチャーの Transform 取得
+                LocalTransform launcherTransform =
+                    SystemAPI.GetComponent<LocalTransform>(
+                        launcherSettings.ValueRO.LauncherEntity);
+
                 // 発射時にランチャー位置へ同期させる
                 SystemAPI.SetComponent(entity, new LocalTransform
                 {

@@ -20,7 +20,7 @@ namespace PinballSystem
     /// </summary>
     [BurstCompile]
     [UpdateInGroup(typeof(InitializationSystemGroup))]
-    [UpdateAfter(typeof(PinballPoolSystem))]
+    [UpdateAfter(typeof(PinballPoolEntrySystem))]
     public partial struct PinballSpawnSystem : ISystem
     {
         // ======================================================
@@ -28,7 +28,7 @@ namespace PinballSystem
         // ======================================================
 
         /// <summary>
-        /// プールを1列に配置する最大個数
+        /// プールを 1 列に配置する最大個数
         /// </summary>
         private const int POOL_ROW_COUNT = 50;
 
@@ -85,25 +85,19 @@ namespace PinballSystem
                 Entity entity = entities[i];
 
                 // --------------------------------------------------
-                // ピンボール物理データ取得
-                // --------------------------------------------------
-                PinballPhysicsData physics =
-                    SystemAPI.GetComponent<PinballPhysicsData>(entity);
-
-                // --------------------------------------------------
                 // 位置設定
                 // --------------------------------------------------
-                // X座標を算出する
+                // X 座標を算出する
                 float positionX = i % POOL_ROW_COUNT;
 
-                // Z座標を算出する
+                // Z 座標を算出する
                 float positionZ = i / POOL_ROW_COUNT; 
                 
                 SystemAPI.SetComponent(entity, new LocalTransform
                 {
                     Position = new float3(positionX, POOL_HEIGHT, positionZ),
                     Rotation = quaternion.identity,
-                    Scale = physics.Scale
+                    Scale = 0f
                 });
 
                 // --------------------------------------------------
