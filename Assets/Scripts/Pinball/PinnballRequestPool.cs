@@ -16,14 +16,5 @@ namespace PinballSystem
     /// </summary>
     public struct PinballRequestPool : IComponentData
     {
-        // ======================================================
-        // プール情報
-        // ======================================================
-
-        /// <summary>
-        /// プール内の配置番号
-        /// 配置座標の算出に使用する
-        /// </summary>
-        public int PoolIndex;
     }
 }

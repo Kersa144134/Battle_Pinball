@@ -39,6 +39,17 @@ namespace PinballSystem
             // プールデータバッファ追加
             state.EntityManager.AddBuffer<PinballPoolEntry>(poolEntity);
 
+            // プール管理情報を追加する
+            state.EntityManager.AddComponent<PinballPoolInfo>(poolEntity);
+
+            // プール管理情報を初期化する
+            state.EntityManager.SetComponentData(
+                poolEntity,
+                new PinballPoolInfo
+                {
+                    NextPoolIndex = 0
+                });
+
             // システム停止
             state.Enabled = false;
         }

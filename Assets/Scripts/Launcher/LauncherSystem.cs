@@ -35,7 +35,7 @@ namespace LauncherSystem
             DynamicBuffer<PinballPoolEntry> pool =
                 SystemAPI.GetSingletonBuffer<PinballPoolEntry>();
 
-            // プールが空なら終了
+            // プールが存在しないなら処理なし
             if (pool.Length == 0)
             {
                 return;
