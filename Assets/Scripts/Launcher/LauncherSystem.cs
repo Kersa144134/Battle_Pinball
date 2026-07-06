@@ -63,7 +63,7 @@ namespace LauncherSystem
                 launcherState.ValueRW.ElapsedTime = 0f;
 
                 // --------------------------------------------------
-                // プールから発射対象を取得
+                // 発射対象取得
                 // --------------------------------------------------
                 // プールが空の場合は処理なし
                 if (pool.Length == 0)
@@ -127,9 +127,9 @@ namespace LauncherSystem
                 });
 
                 // --------------------------------------------------
-                // 初速度を付与
+                // 発射速度を付与
                 // --------------------------------------------------
-                // 発射方向へ初速度を与えて飛翔挙動を生成
+                // 発射方向へ発射速度を与える
                 SystemAPI.SetComponent(entity, new PhysicsVelocity
                 {
                     Linear = direction * launcherSettings.ValueRO.Speed,
