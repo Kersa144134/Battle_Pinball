@@ -46,24 +46,6 @@
                     "name": "Next",
                     "type": "Button",
                     "id": "b7230bb6-fc9b-4f52-8b25-f5e19cb2c2ba",
-                    "expectedControlType": "Button",
-                    "processors": "",
-                    "interactions": "",
-                    "initialStateCheck": false
-                },
-                {
-                    "name": "Save",
-                    "type": "Button",
-                    "id": "f81f37a6-918d-4f3e-9455-cf14ef145633",
-                    "expectedControlType": "",
-                    "processors": "",
-                    "interactions": "",
-                    "initialStateCheck": false
-                },
-                {
-                    "name": "Load",
-                    "type": "Button",
-                    "id": "1b45daff-b872-458c-a4ef-be93f3f05f25",
                     "expectedControlType": "",
                     "processors": "",
                     "interactions": "",
@@ -343,28 +325,6 @@
                     "processors": "",
                     "groups": "Gamepad",
                     "action": "Previous",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "51b4a831-0d54-4c57-a994-ded8a9d09874",
-                    "path": "<Keyboard>/z",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "Save",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "46d2d360-9f81-408c-8e9e-da73e4c3e066",
-                    "path": "<Keyboard>/x",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "Load",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }
